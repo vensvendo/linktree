@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendo Sembiring - Link Hub</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 selection:bg-cyan-500 selection:text-white relative overflow-x-hidden">
+
+    <div class="absolute top-10 left-1/4 w-72 h-72 bg-cyan-500/10 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-10 right-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
+
+    <div class="w-full max-w-md mx-auto relative z-10 flex flex-col items-center my-auto py-8">
+        
+        <div class="w-24 h-24 rounded-3xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 p-1 shadow-2xl shadow-cyan-500/20 mb-4 flex items-center justify-center transform hover:scale-105 transition-transform">
+            <div class="w-full h-full bg-slate-900 rounded-[22px] flex items-center justify-center text-4xl">
+                🎮
+            </div>
+        </div>
+
+        <h1 class="text-2xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400 text-center">
+            Vendo Sembiring
+        </h1>
+        <p class="text-xs font-semibold text-slate-400 text-center mt-1 mb-8 max-w-xs">
+            Klik Link di Bawah
+        </p>
+
+        <div id="linksContainer" class="w-full space-y-3"></div>
+
+        <div class="mt-12 text-center">
+            <p class="text-[11px] font-bold text-slate-600 uppercase tracking-widest">
+                © 2026 VenStation
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Tombol Rahasia di Footer (Hanya Anda yang tahu letaknya, atau klik 3x logo footer) -->
+    <div class="fixed bottom-3 right-3 z-50 opacity-20 hover:opacity-100 transition-opacity">
+        <button onclick="requestAdminAccess()" class="bg-slate-900 border border-slate-800 text-slate-400 hover:text-cyan-400 text-[10px] font-bold px-2 py-1 rounded-lg shadow">
+            🔒 Admin
+        </button>
+    </div>
+
+    <!-- Modal Password PIN -->
+    <div id="pinModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-xs shadow-2xl text-slate-100 text-center">
+            <div class="text-3xl mb-2">🔐</div>
+            <h3 class="font-black text-sm text-slate-200 mb-1">Otorisasi Admin</h3>
+            <p class="text-[11px] text-slate-400 mb-4">Masukkan PIN Rahasia untuk mengelola link.</p>
+            <input type="password" id="adminPinInput" placeholder="Masukkan PIN..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-xs text-center text-slate-100 focus:outline-none focus:border-cyan-500 mb-3">
+            <div class="flex gap-2">
+                <button onclick="verifyPin()" class="flex-1 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs rounded-xl">
+                    Masuk
+                </button>
+                <button onclick="document.getElementById('pinModal').classList.add('hidden')" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Modal Panel -->
+    <div id="adminModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 w-full max-w-md shadow-2xl text-slate-100 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4 pb-3 border-b border-slate-800">
+                <h3 class="font-black text-base text-cyan-400 flex items-center gap-2">
+                    <span>🛠️</span> Kelola Link Hub
+                </h3>
+                <button onclick="toggleAdminModal()" class="text-slate-400 hover:text-white font-bold text-lg">✕</button>
+            </div>
+
+            <form onsubmit="handleAddLink(event)" class="space-y-3 mb-6 bg-slate-950/50 p-4 rounded-2xl border border-slate-800/80">
+                <p class="text-xs font-bold text-slate-300">Tambah Link Baru:</p>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 block mb-1">Judul Tombol:</label>
+                    <input type="text" id="linkTitle" placeholder="Contoh: 🚀 Coba Live Demo" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-slate-400 block mb-1">URL Tujuan (https://...):</label>
+                    <input type="url" id="linkUrl" placeholder="https://..." required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500">
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs rounded-xl shadow-lg transition-all">
+                    ➕ Simpan & Tambahkan
+                </button>
+            </form>
+
+            <div>
+                <p class="text-xs font-bold text-slate-300 mb-2">Daftar Link Aktif:</p>
+                <div id="adminLinksList" class="space-y-2"></div>
+            </div>
+
+            <div class="mt-6 pt-3 border-t border-slate-800 flex justify-between">
+                <button onclick="resetToDefault()" class="text-[11px] text-rose-400 hover:text-rose-300 font-bold">
+                    🔄 Reset ke Default
+                </button>
+                <button onclick="toggleAdminModal()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-xl">
+                    Selesai
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 🔑 PIN ADMIN ANDA (Silakan ubah jika mau, misal: '123456')
+        const ADMIN_PIN = '123456';
+
+        const defaultLinks = [
+            {
+                id: '1',
+                title: '🚀 Coba Live Demo Aplikasi',
+                url: 'https://demo-venstation-billing.onrender.com/#/login',
+                gradient: 'from-cyan-500 to-blue-600',
+                icon: '🚀'
+            },
+            {
+                id: '2',
+                title: '💬 Konsultasi & Pesan via WhatsApp',
+                url: 'https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20tertarik%20ingin%20memesan%20aplikasi.',
+                gradient: 'bg-slate-900/80 border border-slate-800 hover:border-emerald-500/50',
+                icon: '💬'
+            },
+            {
+                id: '3',
+                title: '⭐ Lihat Repository GitHub',
+                url: 'https://github.com/vensvendo/demovenstationbiling',
+                gradient: 'bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50',
+                icon: '⭐'
+            }
+        ];
+
+        function getLinks() {
+            const saved = localStorage.getItem('venstation_custom_links');
+            if (saved) {
+                try { return JSON.parse(saved); } catch (e) { return defaultLinks; }
+            }
+            return defaultLinks;
+        }
+
+        function saveLinks(links) {
+            localStorage.setItem('venstation_custom_links', JSON.stringify(links));
+            renderAll();
+        }
+
+        function renderAll() {
+            const links = getLinks();
+            const container = document.getElementById('linksContainer');
+            const adminList = document.getElementById('adminLinksList');
+            
+            container.innerHTML = '';
+            links.forEach(item => {
+                const isGradient = item.gradient && item.gradient.includes('from-');
+                const bgClass = isGradient ? 
+                    `bg-gradient-to-r ${item.gradient} text-white font-black shadow-xl shadow-cyan-500/10` :
+                    `${item.gradient} text-slate-200 font-bold shadow-lg`;
+
+                const a = document.createElement('a');
+                a.href = item.url;
+                a.target = '_blank';
+                a.className = `group relative flex items-center justify-between p-4 rounded-2xl ${bgClass} text-sm transition-all transform hover:-translate-y-0.5 active:scale-95`;
+                a.innerHTML = `
+                    <span class="flex items-center gap-3">
+                        <span class="text-xl">${item.icon || '🔗'}</span>
+                        <span>${item.title}</span>
+                    </span>
+                    <span class="text-white/80 group-hover:translate-x-1 transition-transform">→</span>
+                `;
+                container.appendChild(a);
+            });
+
+            adminList.innerHTML = '';
+            links.forEach((item) => {
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-xs';
+                div.innerHTML = `
+                    <div class="truncate pr-2">
+                        <span class="font-bold text-slate-200 block truncate">${item.title}</span>
+                        <span class="text-[10px] text-slate-500 block truncate">${item.url}</span>
+                    </div>
+                    <button onclick="deleteLink('${item.id}')" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 px-2.5 py-1 rounded-lg font-bold text-[10px] shrink-0">
+                        🗑️ Hapus
+                    </button>
+                `;
+                adminList.appendChild(div);
+            });
+        }
+
+        function requestAdminAccess() {
+            document.getElementById('pinModal').classList.remove('hidden');
+            document.getElementById('adminPinInput').value = '';
+            document.getElementById('adminPinInput').focus();
+        }
+
+        function verifyPin() {
+            const pin = document.getElementById('adminPinInput').value;
+            if (pin === ADMIN_PIN) {
+                document.getElementById('pinModal').classList.add('hidden');
+                toggleAdminModal();
+            } else {
+                alert('❌ PIN Admin Salah!');
+            }
+        }
+
+        function toggleAdminModal() {
+            document.getElementById('adminModal').classList.toggle('hidden');
+        }
+
+        function handleAddLink(e) {
+            e.preventDefault();
+            const title = document.getElementById('linkTitle').value.trim();
+            const url = document.getElementById('linkUrl').value.trim();
+            if (!title || !url) return;
+
+            const links = getLinks();
+            links.push({
+                id: Date.now().toString(),
+                title: title,
+                url: url,
+                gradient: 'bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50',
+                icon: '🔗'
+            });
+            saveLinks(links);
+
+            document.getElementById('linkTitle').value = '';
+            document.getElementById('linkUrl').value = '';
+        }
+
+        function deleteLink(id) {
+            let links = getLinks();
+            links = links.filter(l => l.id !== id);
+            saveLinks(links);
+        }
+
+        function resetToDefault() {
+            if (confirm('Kembalikan ke daftar link default?')) {
+                localStorage.removeItem('venstation_custom_links');
+                renderAll();
+            }
+        }
+
+        renderAll();
+    </script>
+</body>
+</html>
