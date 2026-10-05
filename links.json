@@ -1,0 +1,23 @@
+[
+  {
+    "id": "1",
+    "title": "🚀 Coba Live Demo Aplikasi",
+    "url": "https://demo-venstation-billing.onrender.com/#/login",
+    "gradient": "from-cyan-500 to-blue-600",
+    "icon": "🚀"
+  },
+  {
+    "id": "2",
+    "title": "💬 Konsultasi & Pesan via WhatsApp",
+    "url": "https://wa.me/6281234567890?text=Halo%20Admin,%20saya%20tertarik%20ingin%20memesan%20aplikasi.",
+    "gradient": "bg-slate-900/80 border border-slate-800 hover:border-emerald-500/50",
+    "icon": "💬"
+  },
+  {
+    "id": "3",
+    "title": "⭐ Lihat Repository GitHub",
+    "url": "https://github.com/vensvendo/demovenstationbiling",
+    "gradient": "bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50",
+    "icon": "⭐"
+  }
+]
